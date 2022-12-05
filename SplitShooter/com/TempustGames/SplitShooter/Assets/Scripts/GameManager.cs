@@ -19,6 +19,14 @@ public class GameManager : MonoBehaviour
     public UnityEvent onGameEnd;
     public TMPro.TextMeshProUGUI scoreText;
 
+    private AudioSource source;
+    public AudioClip shipHit;
+    public AudioClip enemyHit;
+    public AudioClip shoot;
+    public AudioClip levelUp;
+
+    [SerializeField] private float hitStopTimeScale;
+    [SerializeField] private float hitStopTime;
 
     private void Awake()
     {
@@ -28,6 +36,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         lives = 4;
+        source = GetComponent<AudioSource>();
     }
 
     public void AddScore(int score)
@@ -35,7 +44,40 @@ public class GameManager : MonoBehaviour
         this.score += score;
     }
 
-    public void SplitGame(ShooterGame game)
+    private void PlayHitSound()
+    {
+        source.PlayOneShot(shipHit);
+    }
+
+    public void OnHit(ShooterGame game)
+    {
+        PlayHitSound();
+        StartCoroutine(HitStop(game, true));
+    }
+
+    private IEnumerator HitStop(ShooterGame game, bool shouldSplit)
+    {
+        Time.timeScale = hitStopTimeScale;
+        yield return new WaitForSecondsRealtime(hitStopTime);
+        Time.timeScale = 1;
+
+        if (shouldSplit)
+        {
+            SplitGame(game);
+        }
+        else
+        {
+            game.Destroyed();
+        }
+    }
+
+    public void EndScreen(ShooterGame game)
+    {
+        PlayHitSound();
+        StartCoroutine(HitStop(game, false));
+    }
+
+    private void SplitGame(ShooterGame game)
     {
         bestSplit = Mathf.Max(bestSplit, game.roundEnemiesDefeated);
 

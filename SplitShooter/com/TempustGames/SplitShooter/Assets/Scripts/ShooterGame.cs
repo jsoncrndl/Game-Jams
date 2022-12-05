@@ -12,6 +12,7 @@ public class ShooterGame : MonoBehaviour
 
     [SerializeField] private int enemiesToLevelUp = 5;
     [SerializeField] private Shooter shooter;
+    private AudioSource source;
 
     private float attackTimer;
 
@@ -22,6 +23,7 @@ public class ShooterGame : MonoBehaviour
         difficulty = GameManager.instance.levels[0];
         level = 0;
         attackTimer = Random.Range(difficulty.spawnTimer.x, difficulty.spawnTimer.y);
+        source = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -32,14 +34,11 @@ public class ShooterGame : MonoBehaviour
             if (splitLevel < 2)
             {
                 spawner.DestroyAll();
-                GameManager.instance.SplitGame(this);
+                GameManager.instance.OnHit(this);
             }
             else if (splitLevel == 2)
             {
-                Destroy(shooter.gameObject);
-                GameManager.instance.Damage();
-                spawner.enabled = false;
-                enabled = false;
+                GameManager.instance.EndScreen(this);
             }
         }
 
@@ -54,6 +53,7 @@ public class ShooterGame : MonoBehaviour
 
     void IncreaseLevel()
     {
+        source.PlayOneShot(GameManager.instance.levelUp);
         if (level == 9) return;
         level++;
         difficulty = GameManager.instance.levels[level];
@@ -62,6 +62,7 @@ public class ShooterGame : MonoBehaviour
 
     public void EnemyDestroyed()
     {
+        source.PlayOneShot(GameManager.instance.enemyHit);
         roundEnemiesDefeated++;
         if (roundEnemiesDefeated % enemiesToLevelUp == 0)
         {
@@ -74,5 +75,13 @@ public class ShooterGame : MonoBehaviour
     public void OnHit()
     {
         hit = true;
+    }
+
+    public void Destroyed()
+    {
+        Destroy(shooter.gameObject);
+        GameManager.instance.Damage();
+        spawner.enabled = false;
+        enabled = false;
     }
 }
