@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float hitStopTimeScale;
     [SerializeField] private float hitStopTime;
 
+    float shootSoundTimer;
+
     private void Awake()
     {
         instance = this;
@@ -39,6 +41,20 @@ public class GameManager : MonoBehaviour
         source = GetComponent<AudioSource>();
     }
 
+    private void Update()
+    {
+        if (shootSoundTimer > 0)
+        {
+            shootSoundTimer -= Time.deltaTime;
+        }
+
+        if (Input.GetButton("Fire") && shootSoundTimer <= 0)
+        {
+            ShootSound();
+            shootSoundTimer = .1f;
+        }
+    }
+
     public void AddScore(int score)
     {
         this.score += score;
@@ -47,6 +63,11 @@ public class GameManager : MonoBehaviour
     private void PlayHitSound()
     {
         source.PlayOneShot(shipHit);
+    }
+
+    private void ShootSound()
+    {
+        source.PlayOneShot(shoot, .4f);
     }
 
     public void OnHit(ShooterGame game)

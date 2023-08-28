@@ -55,7 +55,6 @@ public class Shooter : MonoBehaviour
 
     private void Shoot()
     {
-        source.PlayOneShot(GameManager.instance.shoot);
         curCooldown = shootCooldown;
         Projectile projectile = Instantiate(projectilePrefab, transform.position + transform.up * projectileOffset, transform.rotation, game.transform);
         projectile.owner = this;
