@@ -10,19 +10,21 @@ public class Shooter : MonoBehaviour
 
     [SerializeField] private float baseSpeed;
     [SerializeField] private float acceleration;
-    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private Projectile projectilePrefab;
     [SerializeField] private float projectileOffset;
     [SerializeField] private float shootCooldown;
     [SerializeField] private float turnSpeed;
     private float curCooldown;
     public ShooterGame game;
 
+    private AudioSource source;
     private Vector2 lastDirection;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        source = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -54,7 +56,8 @@ public class Shooter : MonoBehaviour
     private void Shoot()
     {
         curCooldown = shootCooldown;
-        Instantiate(projectilePrefab, transform.position + transform.up * projectileOffset, transform.rotation, game.transform);
+        Projectile projectile = Instantiate(projectilePrefab, transform.position + transform.up * projectileOffset, transform.rotation, game.transform);
+        projectile.owner = this;
     }
 
     public void OnHit()

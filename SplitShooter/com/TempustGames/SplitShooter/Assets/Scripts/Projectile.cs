@@ -6,6 +6,8 @@ public class Projectile : MonoBehaviour
     public float fireSpeed;
     public bool isEnemy;
 
+    public Shooter owner;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,28 +17,29 @@ public class Projectile : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Projectile projectile = collision.gameObject.GetComponent<Projectile>();
-        if (projectile != null && projectile.isEnemy)
+        Projectile hitProjectile = collision.gameObject.GetComponent<Projectile>();
+        Shooter shooter = collision.gameObject.GetComponent<Shooter>();
+        if (hitProjectile != null && hitProjectile.isEnemy)
         {
-            //Play sound
-            ShooterGame game = GetComponentInParent<ShooterGame>();
-            if (game != null)
+            if (owner != null)
             {
-                game.EnemyDestroyed();
+                owner.game.EnemyDestroyed();
             }
         }
-
-        Shooter shooter = collision.gameObject.GetComponent<Shooter>();
-
-        if (shooter != null)
+        else if (shooter != null)
         {
             shooter.OnHit();
+            //Ship was hit
+        }
+        else
+        {
+            //Hit wall
         }
 
-        DestroyProjectile(false);
+        DestroyProjectile();
     }
 
-    public void DestroyProjectile(bool playSound)
+    public void DestroyProjectile()
     {
         Destroy(gameObject);
     }

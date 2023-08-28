@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseSpeed: 4
   acceleration: 20
-  projectilePrefab: {fileID: 8066138530635985081, guid: 9cc62f6b0c3e79e4a8bb1f28d5a2aa3f, type: 3}
+  projectilePrefab: {fileID: 8066138530635985082, guid: 9cc62f6b0c3e79e4a8bb1f28d5a2aa3f, type: 3}
   projectileOffset: 0.75
   shootCooldown: 0.15
   turnSpeed: 500
